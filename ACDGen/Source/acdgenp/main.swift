@@ -13,7 +13,7 @@ import Foundation
 func printHeader() {
     print("")
     print("acdgenp -- AlecrimCoreData Code Generator command line tool")
-    print("Copyright (c) 2015, 2016 Alecrim. All rights reserved.")
+    print("Copyright (c) 2014-2016 Alecrim. All rights reserved.")
     print("-----------------------------------------------------------")
     print("")
 }
