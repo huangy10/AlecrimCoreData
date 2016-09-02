@@ -258,7 +258,7 @@ extension String {
         ]
     }
     
-    private func pluralizedLowercaseString() -> String {
+    fileprivate func pluralizedLowercaseString() -> String {
         let str = self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         
         if str == "" {
@@ -292,7 +292,7 @@ extension String {
         return str;
     }
     
-    private func singularizedLowercaseString() -> String {
+    fileprivate func singularizedLowercaseString() -> String {
         let str = self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         
         if str != "" {

@@ -12,17 +12,17 @@ import CoreData
 public final class EntityExtensionsCodeGenerator: CodeGenerator {
     
     public let parameters: CodeGeneratorParameters
-    private let entityDescription: NSEntityDescription
+    fileprivate let entityDescription: NSEntityDescription
     
-    private let string = NSMutableString()
+    fileprivate let string = NSMutableString()
     
-    private let className: String
+    fileprivate let className: String
     
-    private let attributes: [String : NSAttributeDescription]
-    private let attributeKeys: [String]
+    fileprivate let attributes: [String : NSAttributeDescription]
+    fileprivate let attributeKeys: [String]
     
-    private let relationships: [String : NSRelationshipDescription]
-    private let relationshipKeys: [String]
+    fileprivate let relationships: [String : NSRelationshipDescription]
+    fileprivate let relationshipKeys: [String]
     
     public init(parameters: CodeGeneratorParameters, entityDescription: NSEntityDescription) {
         //
@@ -87,7 +87,7 @@ public final class EntityExtensionsCodeGenerator: CodeGenerator {
 
 extension EntityExtensionsCodeGenerator {
     
-    private func generateHeader(type: SourceCodeFileType) {
+    fileprivate func generateHeader(type: SourceCodeFileType) {
         // header
         self.string.appendHeader(self.className, type: type)
         
@@ -103,20 +103,20 @@ extension EntityExtensionsCodeGenerator {
         self.string.appendLine()
     }
     
-    private func generateExtensionHeader() {
+    fileprivate func generateExtensionHeader() {
         self.string.appendLine("// MARK: - \(self.className) properties")
         self.string.appendLine()
         self.string.appendLine("extension \(self.className) {")
         self.string.appendLine()
     }
     
-    private func generateExtensionFooter() {
+    fileprivate func generateExtensionFooter() {
         self.string.appendLine()
         self.string.appendLine("}")
     }
 
     
-    private func generateFooter() {
+    fileprivate func generateFooter() {
         self.string.appendLine()
     }
     
@@ -124,14 +124,14 @@ extension EntityExtensionsCodeGenerator {
 
 extension EntityExtensionsCodeGenerator {
     
-    private func generateDefaultFetchRequest() {
+    fileprivate func generateDefaultFetchRequest() {
         self.string.appendLine("@nonobjc " + self.parameters.accessModifier + "class func fetchRequest() -> NSFetchRequest<\(self.className)> {", indentLevel: 1)
         self.string.appendLine("return NSFetchRequest<\(self.className)>(entityName: \"\(self.className)\")", indentLevel: 2)
         self.string.appendLine("}", indentLevel: 1)
         self.string.appendLine()
     }
     
-    private func generateAttributes() {
+    fileprivate func generateAttributes() {
         for attributeKey in self.attributeKeys {
             let attribute = self.attributes[attributeKey]!
             if self.isInheritedPropertyDescription(attribute) {
@@ -151,7 +151,7 @@ extension EntityExtensionsCodeGenerator {
         }
     }
     
-    private func generateToOneRelationships() {
+    fileprivate func generateToOneRelationships() {
         var addedSeparator = false
         
         for relationshipKey in relationshipKeys {
@@ -175,7 +175,7 @@ extension EntityExtensionsCodeGenerator {
         }
     }
     
-    private func generateToManyRelationships() {
+    fileprivate func generateToManyRelationships() {
         var addedSeparator = false
         
         //
@@ -289,7 +289,7 @@ extension EntityExtensionsCodeGenerator {
 //        }
     }
     
-    private func generateFetchedProperties() {
+    fileprivate func generateFetchedProperties() {
         var addedSeparator = false
         
         let fetchedProperties = (self.entityDescription.properties.filter({ $0 is NSFetchedPropertyDescription }) as! [NSFetchedPropertyDescription]).sorted { $0.name < $1.name }
@@ -310,14 +310,14 @@ extension EntityExtensionsCodeGenerator {
         }
     }
     
-    private func generateFetchRequestTemplates() {
+    fileprivate func generateFetchRequestTemplates() {
         // TODO:
     }
 }
 
 extension EntityExtensionsCodeGenerator {
     
-    private func generateClassQueryAttributes() {
+    fileprivate func generateClassQueryAttributes() {
         self.generateClassQueryAttributesHeader()
         self.generateClassQueryAttributesForAttributes()
         self.generateClassQueryAttributesForToOneRelationships()
@@ -325,7 +325,7 @@ extension EntityExtensionsCodeGenerator {
         self.generateClassQueryAttributesFooter()
     }
     
-    private func generateClassQueryAttributesHeader() {
+    fileprivate func generateClassQueryAttributesHeader() {
         self.string.appendLine()
         self.string.appendLine("// MARK: - \(self.className) query attributes")
         self.string.appendLine()
@@ -333,7 +333,7 @@ extension EntityExtensionsCodeGenerator {
         self.string.appendLine()
     }
     
-    private func generateClassQueryAttributesForAttributes() {
+    fileprivate func generateClassQueryAttributesForAttributes() {
         for attributeKey in self.attributeKeys {
             let attribute = self.attributes[attributeKey]!
             if self.isInheritedPropertyDescription(attribute) || attribute.isTransient {
@@ -349,7 +349,7 @@ extension EntityExtensionsCodeGenerator {
         }
     }
     
-    private func generateClassQueryAttributesForToOneRelationships() {
+    fileprivate func generateClassQueryAttributesForToOneRelationships() {
         var addedSeparator = false
         
         for relationshipKey in self.relationshipKeys {
@@ -374,7 +374,7 @@ extension EntityExtensionsCodeGenerator {
         }
     }
     
-    private func generateClassQueryAttributesForToManyRelationships() {
+    fileprivate func generateClassQueryAttributesForToManyRelationships() {
         var addedSeparator = false
         
         for relationshipKey in self.relationshipKeys {
@@ -408,7 +408,7 @@ extension EntityExtensionsCodeGenerator {
         }
     }
     
-    private func generateClassQueryAttributesFooter() {
+    fileprivate func generateClassQueryAttributesFooter() {
         string.appendLine()
         string.appendLine("}")
     }
@@ -417,7 +417,7 @@ extension EntityExtensionsCodeGenerator {
 
 extension EntityExtensionsCodeGenerator {
     
-    private func generateInstanceQueryAttributes() {
+    fileprivate func generateInstanceQueryAttributes() {
         self.generateInstanceQueryAttributesHeader()
         self.generateInstanceQueryAttributesForAttributes()
         self.generateInstanceQueryAttributesForToOneRelationships()
@@ -425,7 +425,7 @@ extension EntityExtensionsCodeGenerator {
         self.generateInstanceQueryAttributesFooter()
     }
     
-    private func generateInstanceQueryAttributesHeader() {
+    fileprivate func generateInstanceQueryAttributesHeader() {
         self.string.appendLine()
         self.string.appendLine("// MARK: - AttributeProtocol extensions")
         self.string.appendLine()
@@ -433,7 +433,7 @@ extension EntityExtensionsCodeGenerator {
         self.string.appendLine()
     }
     
-    private func generateInstanceQueryAttributesForAttributes() {
+    fileprivate func generateInstanceQueryAttributesForAttributes() {
         for attributeKey in self.attributeKeys {
             let attribute = self.attributes[attributeKey]!
             if self.isInheritedPropertyDescription(attribute) || attribute.isTransient {
@@ -449,7 +449,7 @@ extension EntityExtensionsCodeGenerator {
         }
     }
     
-    private func generateInstanceQueryAttributesForToOneRelationships() {
+    fileprivate func generateInstanceQueryAttributesForToOneRelationships() {
         var addedSeparator = false
         
         for relationshipKey in self.relationshipKeys {
@@ -474,7 +474,7 @@ extension EntityExtensionsCodeGenerator {
         }
     }
     
-    private func generateInstanceQueryAttributesForToManyRelationships() {
+    fileprivate func generateInstanceQueryAttributesForToManyRelationships() {
         var addedSeparator = false
         
         for relationshipKey in self.relationshipKeys {
@@ -508,7 +508,7 @@ extension EntityExtensionsCodeGenerator {
         }
     }
     
-    private func generateInstanceQueryAttributesFooter() {
+    fileprivate func generateInstanceQueryAttributesFooter() {
         self.string.appendLine()
         self.string.appendLine("}")
     }
@@ -517,7 +517,7 @@ extension EntityExtensionsCodeGenerator {
 
 extension EntityExtensionsCodeGenerator {
     
-    private func generateDataContextExtension() {
+    fileprivate func generateDataContextExtension() {
         // begin
         self.string.appendLine()
         self.string.appendLine("// MARK: - \(self.parameters.dataContextName) extensions")

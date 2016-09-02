@@ -13,7 +13,7 @@ public final class ModelCodeGenerator: CodeGenerator {
     
     public let parameters: CodeGeneratorParameters
     
-    private var tempFileURLs = [URL]()
+    fileprivate var tempFileURLs = [URL]()
     
     public init(parameters: CodeGeneratorParameters) {
         self.parameters = parameters
@@ -61,7 +61,7 @@ public final class ModelCodeGenerator: CodeGenerator {
 
 extension ModelCodeGenerator {
 
-    private func createTemporaryManagedObjectModel() throws -> NSManagedObjectModel {
+    fileprivate func createTemporaryManagedObjectModel() throws -> NSManagedObjectModel {
         let launchPath = "/Applications/Xcode.app/Contents/Developer/usr/bin/momc"
         guard FileManager.default.fileExists(atPath: launchPath) else { throw CodeGeneratorError.momcToolNotFound }
         
@@ -83,7 +83,7 @@ extension ModelCodeGenerator {
         arguments.append(self.parameters.dataModelFileURL.path)
         arguments.append(tempFilePath)
         
-        let task = Task.launchedTask(withLaunchPath: launchPath, arguments: arguments)
+        let task = Process.launchedProcess(launchPath: launchPath, arguments: arguments)
         task.waitUntilExit()
         guard task.terminationStatus == 0 else { throw CodeGeneratorError.momcToolCallFailed }
         
