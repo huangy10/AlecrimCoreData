@@ -44,7 +44,7 @@ class AlarmEditViewController: UIViewController {
     
     // MARK: - Navigation
     
-    override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier! {
         case "SaveUnwindSegue":
             if let alarm = self.alarm {
@@ -63,7 +63,7 @@ class AlarmEditViewController: UIViewController {
 
 extension AlarmEditViewController {
     
-    private func fillAndSaveAlarm(_ alarm: Alarm) {
+    fileprivate func fillAndSaveAlarm(_ alarm: Alarm) {
         if alarm.isInserted {
             alarm.identifier = UUID().uuidString
         }

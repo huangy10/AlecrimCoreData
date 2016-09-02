@@ -15,13 +15,13 @@ class AlarmTableViewController: UITableViewController {
     
     // MARK :-
     
-    private lazy var fetchRequestController: FetchRequestController<Alarm> = {
+    fileprivate private(set) lazy var fetchRequestController: FetchRequestController<Alarm> = {
         let query = viewContext.alarms.orderBy { $0.date }
         
         return query.toFetchRequestController()
     }()
 
-    private lazy var dateFormatter: DateFormatter = {
+    fileprivate private(set) lazy var dateFormatter: DateFormatter = {
         let df = DateFormatter()
         df.dateStyle = .medium
         df.timeStyle = .short
@@ -64,7 +64,7 @@ class AlarmTableViewController: UITableViewController {
     
     // MARK: - Navigation
     
-    override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier! {
         case "AddAlarm":
             if let vc = (segue.destination as? UINavigationController)?.topViewController as? AlarmEditViewController {
