@@ -44,8 +44,8 @@ public final class FetchRequestController<T: NSManagedObject> {
     }()
 
     //
-    private let initialPredicate: NSPredicate?
-    private let initialSortDescriptors: [NSSortDescriptor]?
+    fileprivate let initialPredicate: NSPredicate?
+    fileprivate let initialSortDescriptors: [NSSortDescriptor]?
     
     /// Returns a fetch request controller initialized using the given arguments.
     ///
@@ -58,7 +58,7 @@ public final class FetchRequestController<T: NSManagedObject> {
     ///
     /// - warning: Unlike the previous versions of **AlecrimCoreData** the fetch request is NOT executed until
     ///            a call to `performFetch:` method is made. This is the same behavior found in `NSFetchedResultsController`.
-    private init(fetchRequest: NSFetchRequest<T>, managedObjectContext: NSManagedObjectContext, sectionNameKeyPath: String? = nil, cacheName: String? = nil) {
+    fileprivate init(fetchRequest: NSFetchRequest<T>, managedObjectContext: NSManagedObjectContext, sectionNameKeyPath: String? = nil, cacheName: String? = nil) {
         //
         self.fetchRequest = fetchRequest
         self.managedObjectContext = managedObjectContext
@@ -80,7 +80,7 @@ public final class FetchRequestController<T: NSManagedObject> {
     ///
     /// - warning: Unlike the previous versions of **AlecrimCoreData** the fetch request is NOT executed until
     ///            a call to `performFetch:` method is made. This is the same behavior found in `NSFetchedResultsController`.
-    private convenience init<T: TableProtocol>(table: T, sectionNameKeyPath: String? = nil, cacheName: String? = nil) {
+    fileprivate convenience init<T: TableProtocol>(table: T, sectionNameKeyPath: String? = nil, cacheName: String? = nil) {
         self.init(fetchRequest: table.toFetchRequest(), managedObjectContext: table.context, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)
     }
     
@@ -237,7 +237,7 @@ extension FetchRequestController {
 
 extension FetchRequestController {
     
-    public func filter(_ predicateClosure: @noescape (T.Type) -> NSPredicate) throws {
+    public func filter(_ predicateClosure: (T.Type) -> NSPredicate) throws {
         let predicate = predicateClosure(T.self)
         try self.refresh(using: predicate, keepOriginalPredicate: true)
     }
@@ -254,7 +254,7 @@ extension FetchRequestController {
 
 extension FetchRequestController {
  
-    private func assignPredicate(_ predicate: NSPredicate?, keepOriginalPredicate: Bool) {
+    fileprivate func assignPredicate(_ predicate: NSPredicate?, keepOriginalPredicate: Bool) {
         let newPredicate: NSPredicate?
         
         if keepOriginalPredicate {
@@ -277,7 +277,7 @@ extension FetchRequestController {
         self.fetchRequest.predicate = newPredicate
     }
     
-    private func assignSortDescriptors(_ sortDescriptors: [NSSortDescriptor]?, keepOriginalSortDescriptors: Bool) {
+    fileprivate func assignSortDescriptors(_ sortDescriptors: [NSSortDescriptor]?, keepOriginalSortDescriptors: Bool) {
         let newSortDescriptors: [NSSortDescriptor]?
         
         if keepOriginalSortDescriptors {
@@ -361,7 +361,7 @@ extension TableProtocol where Self.Element: NSManagedObject {
     ///
     /// - warning: Unlike the previous versions of **AlecrimCoreData** the fetch request is NOT executed until
     ///            a call to `performFetch:` method is made. This is the same behavior found in `NSFetchedResultsController`.
-    public func toFetchRequestController<A>(_ sectionAttributeClosure: @noescape (Self.Element.Type) -> Attribute<A>) -> FetchRequestController<Self.Element> {
+    public func toFetchRequestController<A>(_ sectionAttributeClosure: (Self.Element.Type) -> Attribute<A>) -> FetchRequestController<Self.Element> {
         return FetchRequestController(table: self, sectionNameKeyPath: sectionAttributeClosure(Self.Element.self).___name)
     }
     
