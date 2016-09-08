@@ -11,25 +11,24 @@ import CoreData
 
 // MARK: -
 
-private var cachedEntityDescriptions = [String : NSEntityDescription]()
+private var cachedObjectDescriptions = [String : NSEntityDescription]()
 
-@warn_unused_result
-private func cachedEntityDescription(for dataContext: NSManagedObjectContext, managedObjectType: NSManagedObject.Type) -> NSEntityDescription {
-    let dataContextClassName = String(dataContext.dynamicType)
-    let managedObjectClassName = String(managedObjectType)
-    let cacheKey = "\(dataContextClassName)|\(managedObjectClassName)"
+private func cachedObjectDescription(for context: NSManagedObjectContext, managedObjectType: NSManagedObject.Type) -> NSEntityDescription {
+    let contextClassName = String(describing: type(of: context))
+    let managedObjectClassName = String(describing: managedObjectType)
+    let cacheKey = "\(contextClassName)|\(managedObjectClassName)"
     
     let entityDescription: NSEntityDescription
     
-    if let cachedEntityDescription = cachedEntityDescriptions[cacheKey] {
-        entityDescription = cachedEntityDescription
+    if let cachedObjectDescription = cachedObjectDescriptions[cacheKey] {
+        entityDescription = cachedObjectDescription
     }
     else {
-        let persistentStoreCoordinator = dataContext.persistentStoreCoordinator!
+        let persistentStoreCoordinator = context.persistentStoreCoordinator!
         let managedObjectModel = persistentStoreCoordinator.managedObjectModel
         
-        entityDescription = managedObjectModel.entities.filter({ $0.managedObjectClassName.componentsSeparatedByString(".").last! == managedObjectClassName }).first!
-        cachedEntityDescriptions[cacheKey] = entityDescription
+        entityDescription = managedObjectModel.entities.filter({ $0.managedObjectClassName.components(separatedBy: ".").last! == managedObjectClassName }).first!
+        cachedObjectDescriptions[cacheKey] = entityDescription
     }
     
     return entityDescription
@@ -40,21 +39,21 @@ private func cachedEntityDescription(for dataContext: NSManagedObjectContext, ma
 
 public struct Table<T: NSManagedObject>: TableProtocol {
     
-    public typealias Item = T
+    public typealias Element = T
     
-    public let dataContext: NSManagedObjectContext
+    public let context: NSManagedObjectContext
     public let entityDescription: NSEntityDescription
     
     public var offset: Int = 0
     public var limit: Int = 0
-    public var batchSize: Int = DataContextOptions.defaultBatchSize
+    public var batchSize: Int = PersistentContainerOptions.defaultBatchSize
     
     public var predicate: NSPredicate? = nil
     public var sortDescriptors: [NSSortDescriptor]? = nil
     
-    public init(dataContext: NSManagedObjectContext) {
-        self.dataContext = dataContext
-        self.entityDescription = cachedEntityDescription(for: dataContext, managedObjectType: T.self)
+    public init(context: NSManagedObjectContext) {
+        self.context = context
+        self.entityDescription = cachedObjectDescription(for: context, managedObjectType: T.self)
     }
     
 }
