@@ -25,19 +25,27 @@
             
             var reloadData = false
             
+            //
+            func reset() {
+                insertedSectionIndexes.removeAllIndexes()
+                deletedSectionIndexes.removeAllIndexes()
+                updatedSectionIndexes.removeAllIndexes()
+                
+                insertedItemIndexPaths.removeAll(keepingCapacity: false)
+                deletedItemIndexPaths.removeAll(keepingCapacity: false)
+                updatedItemIndexPaths.removeAll(keepingCapacity: false)
+                
+                reloadData = false
+            }
+            
+            //
             self
                 .needsReloadData {
                     reloadData = true
                 }
                 .willChangeContent {
                     if !reloadData {
-                        insertedSectionIndexes.removeAllIndexes()
-                        deletedSectionIndexes.removeAllIndexes()
-                        updatedSectionIndexes.removeAllIndexes()
-                        
-                        insertedItemIndexPaths.removeAll(keepingCapacity: false)
-                        deletedItemIndexPaths.removeAll(keepingCapacity: false)
-                        updatedItemIndexPaths.removeAll(keepingCapacity: false)
+                        reset()
                     }
                 }
                 .didInsertSection { sectionInfo, sectionIndex in
@@ -105,19 +113,17 @@
                         }
                     }
                 }
-                .didChangeContent { [unowned collectionView] in
+                .didChangeContent { [weak collectionView] in
+                    //
+                    guard let collectionView = collectionView else {
+                        reset()
+                        return
+                    }
+                    
+                    //
                     if reloadData {
                         collectionView.reloadData()
-                        
-                        insertedSectionIndexes.removeAllIndexes()
-                        deletedSectionIndexes.removeAllIndexes()
-                        updatedSectionIndexes.removeAllIndexes()
-                        
-                        insertedItemIndexPaths.removeAll(keepingCapacity: false)
-                        deletedItemIndexPaths.removeAll(keepingCapacity: false)
-                        updatedItemIndexPaths.removeAll(keepingCapacity: false)
-                        
-                        reloadData = false
+                        reset()
                     }
                     else {
                         collectionView.performBatchUpdates({
@@ -144,27 +150,18 @@
                             if updatedItemIndexPaths.count > 0 && cellConfigurationHandler == nil {
                                 collectionView.reloadItems(at: Set(updatedItemIndexPaths))
                             }
-                            },
-                                                           completionHandler: { finished in
-                                                            if finished {
-                                                                if let cellConfigurationHandler = cellConfigurationHandler {
-                                                                    for updatedItemIndexPath in updatedItemIndexPaths {
-                                                                        if let item = collectionView.item(at: updatedItemIndexPath) as? ItemType {
-                                                                            cellConfigurationHandler(item, updatedItemIndexPath)
-                                                                        }
-                                                                    }
-                                                                }
-                                                                
-                                                                insertedSectionIndexes.removeAllIndexes()
-                                                                deletedSectionIndexes.removeAllIndexes()
-                                                                updatedSectionIndexes.removeAllIndexes()
-                                                                
-                                                                insertedItemIndexPaths.removeAll(keepingCapacity: false)
-                                                                deletedItemIndexPaths.removeAll(keepingCapacity: false)
-                                                                updatedItemIndexPaths.removeAll(keepingCapacity: false)
-                                                                
-                                                                reloadData = false
-                                                            }
+                        }, completionHandler: { finished in
+                            if finished {
+                                if let cellConfigurationHandler = cellConfigurationHandler {
+                                    for updatedItemIndexPath in updatedItemIndexPaths {
+                                        if let item = collectionView.item(at: updatedItemIndexPath) as? ItemType {
+                                            cellConfigurationHandler(item, updatedItemIndexPath)
+                                        }
+                                    }
+                                }
+                                
+                                reset()
+                            }
                         })
                     }
             }

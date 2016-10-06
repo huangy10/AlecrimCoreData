@@ -26,19 +26,27 @@
             var reloadData = false
             
             //
+            func reset() {
+                insertedSectionIndexes.removeAllIndexes()
+                deletedSectionIndexes.removeAllIndexes()
+                updatedSectionIndexes.removeAllIndexes()
+                
+                insertedItemIndexPaths.removeAll(keepingCapacity: false)
+                deletedItemIndexPaths.removeAll(keepingCapacity: false)
+                updatedItemIndexPaths.removeAll(keepingCapacity: false)
+                
+                reloadData = false
+            }
+            
+            //
             self
                 .needsReloadData {
                     reloadData = true
                 }
                 .willChangeContent {
                     if !reloadData {
-                        insertedSectionIndexes.removeAllIndexes()
-                        deletedSectionIndexes.removeAllIndexes()
-                        updatedSectionIndexes.removeAllIndexes()
-                        
-                        insertedItemIndexPaths.removeAll(keepingCapacity: false)
-                        deletedItemIndexPaths.removeAll(keepingCapacity: false)
-                        updatedItemIndexPaths.removeAll(keepingCapacity: false)
+                        //
+                        reset()
                         
                         //
                         tableView.beginUpdates()
@@ -109,9 +117,17 @@
                         }
                     }
                 }
-                .didChangeContent { [unowned tableView] in
+                .didChangeContent { [weak tableView] in
+                    //
+                    guard let tableView = tableView else {
+                        reset()
+                        return
+                    }
+                    
+                    //
                     if reloadData {
                         tableView.reloadData()
+                        reset()
                     }
                     else {
                         if deletedSectionIndexes.count > 0 {
@@ -147,18 +163,9 @@
                                 }
                             }
                         }
+                        
+                        reset()
                     }
-                    
-                    //
-                    insertedSectionIndexes.removeAllIndexes()
-                    deletedSectionIndexes.removeAllIndexes()
-                    updatedSectionIndexes.removeAllIndexes()
-                    
-                    insertedItemIndexPaths.removeAll(keepingCapacity: false)
-                    deletedItemIndexPaths.removeAll(keepingCapacity: false)
-                    updatedItemIndexPaths.removeAll(keepingCapacity: false)
-                    
-                    reloadData = false
             }
             
             //
