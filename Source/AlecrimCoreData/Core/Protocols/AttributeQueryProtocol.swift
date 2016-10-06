@@ -43,7 +43,7 @@ extension AttributeQueryProtocol {
             let dicts: [NSDictionary]
             
             if #available(OSXApplicationExtension 10.12, iOSApplicationExtension 10.0, tvOSApplicationExtension 10.0, watchOSApplicationExtension 3.0, *) {
-                dicts = try fetchRequest.execute() as [NSDictionary]
+                dicts = try fetchRequest.execute()
             }
             else {
                 dicts = try self.context.fetch(fetchRequest)
