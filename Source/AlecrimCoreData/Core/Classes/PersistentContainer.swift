@@ -16,6 +16,7 @@ public struct PersistentContainerOptions {
 
 // FIXME: this class is using a lot of unsafe bit casts to provide generic support (errors can occur if the derived managed object class add stored properties or new methods)
 
+@available(OSXApplicationExtension 10.12, iOSApplicationExtension 10.0, tvOSApplicationExtension 10.0, watchOSApplicationExtension 3.0, *)
 public class PersistentContainer<T: NSManagedObjectContext> {
 
     // MARK: -
